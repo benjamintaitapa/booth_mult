@@ -63,4 +63,11 @@ always_ff @(posedge clk, negedge resetn) begin
   end
 end
 
+`ifdef COCOTB_SIM
+initial begin
+  $dumpfile("dump.vcd");
+  $dumpvars(0, booth_radix4);
+end
+`endif
+
 endmodule : booth_radix4
