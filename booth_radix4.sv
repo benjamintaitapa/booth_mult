@@ -10,7 +10,7 @@ module booth_radix4 (
   input logic clk,
   input logic resetn,
   output logic valid,
-  output logic [8:0] product
+  output logic [7:0] product
 );
 
 reg [4:0] M_ext;
@@ -43,22 +43,22 @@ end
 always_ff @(posedge clk, negedge resetn) begin
   if (resetn == 0) begin
     partial_product <= 10'b0;
-    product <= 9'b0;
+    product <= 8'b0;
     count <= 2'b0;
     valid <= 0;
   end else begin
     if (count == 0) begin
-      partial_product <= {{5{A[3]}}, A[3:0], 1'b0};
+      partial_product <= {5'b0, A[3:0], 1'b0};
       count <= count + 1;
     end
     else begin
       if (count <= 2) begin
-        partial_product <= ({(partial_product[9:5] + addend), partial_product[4:0]} >>> 2);
+        partial_product <= $signed({(partial_product[9:5] + addend), partial_product[4:0]}) >>> 2;
         count <= count + 1;
       end
       else
         valid <= 1;
-        product <= partial_product[9:1];
+        product <= partial_product[8:1];
     end
   end
 end
