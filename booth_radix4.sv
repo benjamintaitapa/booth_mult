@@ -13,10 +13,10 @@ module booth_radix4 (
   output logic [7:0] product
 );
 
-reg [4:0] M_ext;
-reg [4:0] M_neg;
-reg [4:0] M_2;
-reg [4:0] M_neg2;
+reg [5:0] M_ext;
+reg [5:0] M_neg;
+reg [5:0] M_2;
+reg [5:0] M_neg2;
 reg [9:0] partial_product;
 reg [1:0] count;
 
@@ -24,8 +24,8 @@ logic [9:0] addend;
 logic [9:0] pp_se_lsr1;
 logic [9:0] pp_se_lsr1_add;
 
-assign M_ext = {M[3], M[3:0]};
-assign M_neg  = -M;
+assign M_ext = {{2{M[3]}}, M[3:0]};
+assign M_neg  = -M_ext;
 assign M_2    = M_ext << 1;
 assign M_neg2 = M_neg << 1;
 assign pp_se_lsr1 = {partial_product[9], partial_product[9:1]};
@@ -35,10 +35,10 @@ assign pp_se_lsr1_add = pp_se_lsr1 + addend;
 always_comb begin
   case (partial_product[2:0])
     3'b000         : addend = 10'b0;
-    3'b001, 3'b010 : addend = {M_ext[3], M_ext, 4'b0};
-    3'b011         : addend = {M_2[3], M_2, 4'b0};
-    3'b100         : addend = {M_neg2[3], M_neg2, 4'b0};
-    3'b101, 3'b110 : addend = {M_neg[3], M_neg, 4'b0};
+    3'b001, 3'b010 : addend = {M_ext, 4'b0};
+    3'b011         : addend = {M_2, 4'b0};
+    3'b100         : addend = {M_neg2, 4'b0};
+    3'b101, 3'b110 : addend = {M_neg, 4'b0};
     3'b111         : addend = 10'b0;
     default        : addend = 10'bx;
   endcase
