@@ -53,7 +53,7 @@ always_ff @(posedge clk, negedge resetn) begin
     end
     else begin
       if (count <= 2) begin
-        partial_product <= $signed({(partial_product[9:5] + addend), partial_product[4:0]}) >>> 2;
+        partial_product <= ({(partial_product[9:5] + addend), partial_product[4:0]}) >> 2;
         count <= count + 1;
       end
       else
